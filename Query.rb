@@ -70,7 +70,7 @@ course-system(dev)> Course.find(Enrollment.group(:course_id).count.max_by{|key ,
 => [9, 10]
 
 8.Fetch details of individuals who enrolled within the last 7 days.
----------> Enrollment.where("created_at >= ?", 7.days.ago)
+---------> Enrollment.enroll_within(7.days.ago)
 
 9.List all courses that were created within the last month.
 --------->  Course.where("created_at >= ?", 1.month.ago).each {|course| p course.name}
@@ -361,7 +361,8 @@ Shaloni
 ----------->
 
 40.Identify individuals who have dropped out of multiple courses.
------------> p StudentSignUp.find(student_id).first_name
+----------->Enrollment.where(completed_status: 'active').group(:student_sign_up_id).having('COUNT(course_id) > 1').count.keys.each do |student_id| 
+            p StudentSignUp.find(student_id).first_name
 course-system(dev)> end
   Enrollment Count (0.1ms)  SELECT COUNT(*) AS "count_all", "enrollments"."student_sign_up_id" AS "enrollments_student_sign_up_id" FROM "enrollments" WHERE "enrollments"."completed_status" = 'dropped' GROUP BY "enrollments"."student_sign_up_id" HAVING (COUNT(course_id) > 1) /*application='CourseSystem'*/
   StudentSignUp Load (0.1ms)  SELECT "student_sign_ups".* FROM "student_sign_ups" WHERE "student_sign_ups"."id" = 5 LIMIT 1 /*application='CourseSystem'*/
