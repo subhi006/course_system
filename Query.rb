@@ -337,15 +337,11 @@ Shaloni
   updated_at: "2024-12-29 21:23:03.693699000 +0000">]
 
 32.Count how many individuals have completed at least one course.
------------>Enrollment.where(completed_status: 'completed').distinct.count(:student_sign_up_id)
-  Enrollment Count (0.3ms)  SELECT COUNT(DISTINCT "enrollments"."student_sign_up_id") FROM "enrollments" WHERE "enrollments"."completed_status" = 'completed' /*application='CourseSystem'*/
-=> 2
+----------->
 
 
 33.Retrieve the total number of enrollments for a specific individual.
------------>  Enrollment.where(course_id:Course.where(name: 'BSC').ids).count
-  Course Ids (0.2ms)  SELECT "courses"."id" FROM "courses" WHERE "courses"."name" = 'BSC' /*application='CourseSystem'*/
-=> 0
+----------->  
 
 35Find individuals who enrolled in a specific course on a specific date.
 -----------> 
@@ -426,9 +422,9 @@ course-system(dev)> end
 
 53Fetch the oldest enrollment record for each course.
  Course.all.each do |course|
-course-system(dev)*   old = course.enrollments.order(:created_at).first
-course-system(dev)*   puts " #{course.name} : #{old.student_sign_up.first_name}" if old
-course-system(dev)> end
+   old = course.enrollments.order(:created_at).first
+   puts " #{course.name} : #{old.student_sign_up.first_name}" if old
+ end
 
   Course Load (0.2ms)  SELECT "courses".* FROM "courses" /*application='CourseSystem'*/
   Enrollment Load (0.1ms)  SELECT "enrollments".* FROM "enrollments" WHERE "enrollments"."course_id" = 2 ORDER BY "enrollments"."created_at" ASC LIMIT 1 /*application='CourseSystem'*/
