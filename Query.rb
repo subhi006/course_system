@@ -24,7 +24,10 @@
   updated_at: "2024-12-29 21:42:29.288979000 +0000">]
 
 4.Fetch the names of all courses in which a specific individual is enrolled.
--------> abstract/database_statements.rb:73:in `select_all'
+-------> Course.find(Enrollment.group(:course_id).count.max_by{|key , value| value}.first).name
+StudentSignUp.find(1).courses.each {|i| p i.name}
+
+ abstract/database_statements.rb:73:in `select_all'
 course-system(dev)> Enrollment.where(student_sign_up_id: StudentSignUp.find_by(first_name: 'Sakshi').id)
   StudentSignUp Load (0.3ms)  SELECT "student_sign_ups".* FROM "student_sign_ups" WHERE "student_sign_ups"."first_name" = 'Sakshi' LIMIT 1 /*application='CourseSystem'*/
   Enrollment Load (0.1ms)  SELECT "enrollments".* FROM "enrollments" WHERE "enrollments"."student_sign_up_id" = 5 /* loading for pp */ LIMIT 11 /*application='CourseSystem'*/
@@ -79,9 +82,57 @@ course-system(dev)> Course.find(Enrollment.group(:course_id).count.max_by{|key ,
 => [9, 10]
 
 8.Fetch details of individuals who enrolled within the last 7 days.
-
+---------> Enrollment.where("created_at >= ?", 7.days.ago)
 
 9.List all courses that were created within the last month.
+---------> Course.where("created_at >= ?", 1.month.ago)
+  Course Load (3.6ms)  SELECT "courses".* FROM "courses" WHERE (created_at >= '2024-11-30 05:37:39.878806') /* loading for pp */ LIMIT 11 /*application='CourseSystem'*/
+=>
+[#<Course:0x0000017a80bebf58
+  id: 2,
+  name: "MA",
+  description: "new",
+  price: 0.2e4,
+  duration: 2,
+  status: "open",
+  created_at: "2024-12-29 21:23:03.693699000 +0000",
+  updated_at: "2024-12-29 21:23:03.693699000 +0000">,
+ #<Course:0x0000017a80bebe18
+  id: 3,
+  name: "MA.english",
+  description: "new",
+  price: 0.2e4,
+  duration: 2,
+  status: "close",
+  created_at: "2024-12-29 21:23:24.746031000 +0000",
+  updated_at: "2024-12-29 21:23:24.746031000 +0000">,
+ #<Course:0x0000017a80bebcd8
+  id: 4,
+  name: "B.Tech.",
+  description: "new",
+  price: 0.2e5,
+  duration: 4,
+  status: "close",
+  created_at: "2024-12-29 21:23:46.013351000 +0000",
+  updated_at: "2024-12-29 21:23:46.013351000 +0000">,
+ #<Course:0x0000017a80bebb98
+  id: 5,
+  name: "BCA",
+  description: "new",
+  price: 0.2e5,
+  duration: 3,
+  status: "close",
+  created_at: "2024-12-29 21:24:05.397944000 +0000",
+  updated_at: "2024-12-29 21:24:05.397944000 +0000">,
+ #<Course:0x0000017a80beba58
+  id: 7,
+  name: "BSC.cs",
+  description: "new",
+  price: 0.2e5,
+  duration: 4,
+  status: "close",
+  created_at: "2024-12-22 21:25:14.061136000 +0000",
+  updated_at: "2024-12-29 21:25:14.061607000 +0000">]
 
 
 10Retrieve the names and enrollment dates of all individuals enrolled in a specific course.
@@ -400,18 +451,23 @@ course-system(dev)> end
 
 45.Fetch all courses where the average enrollment duration exceeds a given value.
 ---------->
+
 46.Identify individuals who enrolled in courses but never completed any.
 ---------->
+
 47.Retrieve all enrollments sorted by enrollment date in descending order.
 --------->Enrollment.order(created_at: :desc)
 
 
 48.Count the number of enrollments where the status is "active."
 -----------> Enrollment.where(status: 'active').count
+
 49.Find individuals who have not updated their enrollment status in over a month.
 ----------->Enrollment.where("updated_at < ?", 1.month.ago)
+
 50Retrieve the list of all courses, including the total duration of all enrollments.
 -----------> 
+
 53Fetch the oldest enrollment record for each course.
  Course.all.each do |course|
 course-system(dev)*   old = course.enrollments.order(:created_at).first
