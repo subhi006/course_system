@@ -24,8 +24,7 @@
   updated_at: "2024-12-29 21:42:29.288979000 +0000">]
 
 4.Fetch the names of all courses in which a specific individual is enrolled.
--------> Course.find(Enrollment.group(:course_id).count.max_by{|key , value| value}.first).name
-StudentSignUp.find(1).courses.each {|i| p i.name}
+-------> StudentSignUp.find(1).courses.each {|i| p i.name}
 
  abstract/database_statements.rb:73:in `select_all'
 course-system(dev)> Enrollment.where(student_sign_up_id: StudentSignUp.find_by(first_name: 'Sakshi').id)
@@ -70,7 +69,9 @@ B.Tech. : 0
 BSC.cs : 0
 
 6.Identify the course with the most enrollments.
--------> -12-29 21:25:14.061607000 +0000">]
+-------> == Course.find(Enrollment.group(:course_id).count.max_by{|key , value| value}.first).name
+
+-12-29 21:25:14.061607000 +0000">]
 course-system(dev)> Course.find(Enrollment.group(:course_id).count.max_by{|key , value| value}.first).name
   Enrollment Count (0.2ms)  SELECT COUNT(*) AS "count_all", "enrollments"."course_id" AS "enrollments_course_id" FROM "enrollments" GROUP BY "enrollments"."course_id" /*application='CourseSystem'*/
   Course Load (0.1ms)  SELECT "courses".* FROM "courses" WHERE "courses"."id" = 4 LIMIT 1 /*application='CourseSystem'*/
